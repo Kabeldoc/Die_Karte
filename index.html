@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meine OpenStreetMap auf GitHub Pages</title>
+    <title>Meine OpenStreetMap live</title>
     
-    <!-- JETZT KORREKT: Der echte Pfad für das Leaflet-Design -->
-    <link rel="stylesheet" href="https://cloudflare.com" />
+    <!-- Lädt die CSS-Datei direkt aus Ihrem eigenen GitHub-Ordner -->
+    <link rel="stylesheet" href="leaflet.css" />
     
     <style>
         html, body { margin: 0; padding: 0; height: 100%; }
@@ -17,8 +17,8 @@
 
     <div id="map"></div>
 
-    <!-- JETZT KORREKT: Der echte Pfad für das Leaflet-Programm -->
-    <script src="https://cloudflare.com"></script>
+    <!-- Lädt das Programm direkt aus Ihrem eigenen GitHub-Ordner -->
+    <script src="leaflet.js"></script>
     
     <script>
         // Karte auf Deutschland zentrieren
@@ -27,12 +27,12 @@
         // Die echten OpenStreetMap-Kacheln laden
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
         }).addTo(map);
 
         // Der blaue Pin
         L.marker([51.1657, 10.4515]).addTo(map)
-            .bindPopup('Live auf GitHub Pages!')
+            .bindPopup('Es läuft live auf GitHub Pages!')
             .openPopup();
     </script>
 
