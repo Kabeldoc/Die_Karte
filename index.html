@@ -5,39 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meine OpenStreetMap auf GitHub Pages</title>
     
-    <!-- ABSOLUT WICHTIG: Der exakte, vollständige Pfad zur Leaflet CSS-Datei von cdnjs -->
+    <!-- Richtiger Pfad für das Design -->
     <link rel="stylesheet" href="https://cloudflare.com" />
-    
     <style>
-        html, body { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-        }
-        #map { 
-            height: 100vh; 
-            width: 100%; 
-        }
+        html, body { margin: 0; padding: 0; height: 100%; }
+        #map { height: 100vh; width: 100%; }
     </style>
 </head>
 <body>
 
     <div id="map"></div>
 
-    <!-- ABSOLUT WICHTIG: Der exakte, vollständige Pfad zur Leaflet JS-Datei von cdnjs -->
+    <!-- Richtiger Pfad für das JavaScript-Programm -->
     <script src="https://cloudflare.com"></script>
-    
     <script>
         // Karte auf Deutschland zentrieren
         var map = L.map('map').setView([51.1657, 10.4515], 6);
 
-        // Die echten OpenStreetMap-Kacheln laden (Funktioniert auf GitHub Pages ohne jede Sperre)
+        // Die echten OpenStreetMap-Kacheln laden
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Ihr funktionierender blauer Pin
+        // Der blaue Pin
         L.marker([51.1657, 10.4515]).addTo(map)
             .bindPopup('Live auf GitHub Pages!')
             .openPopup();
