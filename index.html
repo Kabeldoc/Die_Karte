@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine OpenStreetMap auf GitHub Pages</title>
+    
+    <!-- Die echten Leaflet-Dateien über das Internet laden -->
+    <link rel="stylesheet" href="https://cloudflare.com" />
+    <style>
+        html, body { margin: 0; padding: 0; height: 100%; }
+        #map { height: 100vh; width: 100%; }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script src="https://cloudflare.com"></script>
+    <script>
+        // Karte auf Deutschland zentrieren
+        var map = L.map('map').setView([51.1657, 10.4515], 6);
+
+        // Die echten OpenStreetMap-Kacheln laden (funktioniert auf GitHub Pages ohne 403-Fehler!)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Blauer Marker
+        L.marker([51.1657, 10.4515]).addTo(map)
+            .bindPopup('Live auf GitHub Pages!')
+            .openPopup();
+    </script>
+
+</body>
+</html>
