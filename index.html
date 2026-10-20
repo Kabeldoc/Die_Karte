@@ -1,3 +1,7 @@
+<!-- 
+Aufruf mit:
+https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
+-->
 <!DOCTYPE html>
 <!-- 
 Aufruf mit:
@@ -44,7 +48,7 @@ https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
 
     <div id="controls">
         <label for="radius">
-            Umkreis in km: <span id="radiusValue">5</span> m
+            Umkreis: <span id="radiusValue">5</span> km
         </label><br>
         <input id="radius" type="range" min="1" max="100" step="1" value="5">
     </div>
@@ -111,7 +115,7 @@ https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
         }).addTo(map);
 
         const circle = L.circle([latitude, longitude], {
-            radius: initialRadius,
+            radius: initialRadius * 1000,
             color: '#136aec',
             fillColor: '#3388ff',
             fillOpacity: 0.2
