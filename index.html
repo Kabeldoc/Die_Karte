@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!-- 
+Aufruf mit:
+https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
+-->
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -40,9 +44,9 @@
 
     <div id="controls">
         <label for="radius">
-            Umkreis: <span id="radiusValue">1000</span> m
+            Umkreis in km: <span id="radiusValue">5</span> m
         </label><br>
-        <input id="radius" type="range" min="100" max="100000" step="100" value="1000">
+        <input id="radius" type="range" min="1" max="100" step="1" value="5">
     </div>
 
     <div id="map"></div>
@@ -75,11 +79,11 @@
         }
 
         if (!Number.isFinite(initialRadius)) {
-            initialRadius = 1000;
+            initialRadius = 1;
         }
 
         // Slider-Grenzen berücksichtigen.
-        initialRadius = Math.max(100, Math.min(100000, initialRadius));
+        initialRadius = Math.max(1, Math.min(100, initialRadius));
 
         const map = L.map('map').setView([latitude, longitude], 13);
 
@@ -113,18 +117,21 @@
             fillOpacity: 0.2
         }).addTo(map);
 
-        function updateFields() {
-            const position = marker.getLatLng();
-            const radius = Number(radiusSlider.value);
+		function updateFields() {
+			const position = marker.getLatLng();
+			const radiusKm = Number(radiusSlider.value);
+			const radiusMeters = radiusKm * 1000;
 
-            latitudeField.value = position.lat;
-            longitudeField.value = position.lng;
-            radiusField.value = radius;
-            radiusValue.textContent = radius;
+			latitudeField.value = position.lat;
+			longitudeField.value = position.lng;
 
-            circle.setLatLng(position);
-            circle.setRadius(radius);
-        }
+			// Formularfeld enthält den Radius in Kilometern
+			radiusField.value = radiusKm;
+			radiusValue.textContent = radiusKm;
+
+			circle.setLatLng(position);
+			circle.setRadius(radiusMeters);
+		}
 
         // Marker mit der Maus verschoben
         marker.on('dragend', updateFields);
