@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine OpenStreetMap</title>
+
+    <link rel="stylesheet" href="leaflet.css">
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+
+        #controls {
+            position: absolute;
+            z-index: 1000;
+            top: 10px;
+            left: 50px;
+            padding: 10px 14px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 5px #777;
+            font: 14px sans-serif;
+        }
+
+        #radius {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="controls">
+        <label for="radius">
+            Umkreis: <span id="radiusValue">1000</span> m
+        </label><br>
+        <input id="radius" type="range" min="100" max="10000" step="100" value="1000">
+    </div>
+
+    <div id="map"></div>
+
+    <!-- Versteckte Formularfelder mit den aktuellen Werten -->
+    <form id="locationForm">
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+        <input type="hidden" name="radius" id="radiusField">
+    </form>
+
+    <script src="leaflet.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+
+        // URL-Werte verwenden, sofern sie gültig sind; sonst Deutschland als Startpunkt.
+        const defaultLat = 51.1657;
+        const defaultLon = 10.4515;
+
+        let latitude = parseFloat(params.get('lat'));
+        let longitude = parseFloat(params.get('lon'));
+        let initialRadius = parseInt(params.get('radius'), 10);
+
+        if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) {
+            latitude = defaultLat;
+        }
+
+        if (!Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
+            longitude = defaultLon;
+        }
+
+        if (!Number.isFinite(initialRadius)) {
+            initialRadius = 1000;
+        }
+
+        // Slider-Grenzen berücksichtigen.
+        initialRadius = Math.max(100, Math.min(10000, initialRadius));
+
+        const map = L.map('map').setView([latitude, longitude], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
+        }).addTo(map);
+
+        const radiusSlider = document.getElementById('radius');
+        const radiusValue = document.getElementById('radiusValue');
+        const latitudeField = document.getElementById('latitude');
+        const longitudeField = document.getElementById('longitude');
+        const radiusField = document.getElementById('radiusField');
+
+        radiusSlider.value = initialRadius;
+
+        const marker = L.marker([latitude, longitude], {
+            draggable: true
+        }).addTo(map);
+
+        const circle = L.circle([latitude, longitude], {
+            radius: initialRadius,
+            color: '#136aec',
+            fillColor: '#3388ff',
+            fillOpacity: 0.2
+        }).addTo(map);
+
+        function updateFields() {
+            const position = marker.getLatLng();
+            const radius = Number(radiusSlider.value);
+
+            latitudeField.value = position.lat;
+            longitudeField.value = position.lng;
+            radiusField.value = radius;
+            radiusValue.textContent = radius;
+
+            circle.setLatLng(position);
+            circle.setRadius(radius);
+        }
+
+        // Marker mit der Maus verschoben
+        marker.on('dragend', updateFields);
+
+        // Marker durch Klick auf die Karte setzen/verschieben
+        map.on('click', function (event) {
+            marker.setLatLng(event.latlng);
+            updateFields();
+        });
+
+        // Radius über den Slider ändern
+        radiusSlider.addEventListener('input', updateFields);
+
+        // Initiale Werte in die versteckten Felder schreiben
+        updateFields();
+    </script>
+</body>
+</html>
