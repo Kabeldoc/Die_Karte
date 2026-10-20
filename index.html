@@ -42,7 +42,7 @@
         <label for="radius">
             Umkreis: <span id="radiusValue">1000</span> m
         </label><br>
-        <input id="radius" type="range" min="100" max="10000" step="100" value="1000">
+        <input id="radius" type="range" min="100" max="100000" step="100" value="1000">
     </div>
 
     <div id="map"></div>
@@ -79,10 +79,16 @@
         }
 
         // Slider-Grenzen berücksichtigen.
-        initialRadius = Math.max(100, Math.min(10000, initialRadius));
+        initialRadius = Math.max(100, Math.min(100000, initialRadius));
 
         const map = L.map('map').setView([latitude, longitude], 13);
 
+        L.Icon.Default.mergeOptions({
+            iconRetinaUrl: 'images/marker-icon-2x.png',
+            iconUrl: 'images/marker-icon.png',
+            shadowUrl: 'images/marker-shadow.png'
+        });
+        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
