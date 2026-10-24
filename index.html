@@ -39,23 +39,22 @@
 <body>
 
     <div id="controls">
-    <label for="radius">
-        Umkreis: <span id="radiusValue">5</span> km
-    </label><br>
-    <input id="radius" type="range" min="1" max="100" step="1" value="5">
-	
-<!-- neu -->
-    <div>Lat: <span id="latValue"></span></div>
-    <div>Lon: <span id="lonValue"></span></div>
-	<div>Übergebene Lat: <span id="initialLat"></span></div>
-	<div>Übergebene Lon: <span id="initialLon"></span></div>
-</div>
+        <label for="radius">
+            Umkreis: <span id="radiusValue">5</span> km
+        </label><br>
+
+        <input id="radius" type="range" min="1" max="100" step="1" value="5">
+
+        <div>Lat: <span id="latValue"></span></div>
+        <div>Lon: <span id="lonValue"></span></div>
+        <div>Übergebene Lat: <span id="initialLat"></span></div>
+        <div>Übergebene Lon: <span id="initialLon"></span></div>
+    </div>
 
     <div id="map"></div>
 
-    <!-- Versteckte Formularfelder mit den aktuellen Werten -->
     <form id="locationForm">
-     	<input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="latitude" id="latitude">
         <input type="hidden" name="longitude" id="longitude">
         <input type="hidden" name="radius" id="radiusField">
     </form>
@@ -64,16 +63,22 @@
     <script>
         const params = new URLSearchParams(window.location.search);
 
-        // URL-Werte verwenden, sofern sie gültig sind; sonst Deutschland als Startpunkt.
+        // URL-Parameter unverändert für die Anzeige speichern.
+        const rawLat = params.get('lat');
+        const rawLon = params.get('lon');
+
+        document.getElementById('initialLat').textContent =
+            rawLat === null ? 'nicht übergeben' : rawLat;
+
+        document.getElementById('initialLon').textContent =
+            rawLon === null ? 'nicht übergeben' : rawLon;
+
+        // Standardposition, falls keine gültigen Koordinaten übergeben wurden.
         const defaultLat = 51.1657;
         const defaultLon = 10.4515;
-		
-		// +++++ neu
-		const latValue = document.getElementById('latValue');
-		const lonValue = document.getElementById('lonValue');
 
-        let latitude = parseFloat(params.get('lat'));
-        let longitude = parseFloat(params.get('lon'));
+        let latitude = parseFloat(rawLat);
+        let longitude = parseFloat(rawLon);
         let initialRadius = parseInt(params.get('radius'), 10);
 
         if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) {
@@ -87,11 +92,8 @@
         if (!Number.isFinite(initialRadius)) {
             initialRadius = 1;
         }
-		// ++++ neu
-		document.getElementById('initialLat').textContent = latitude.toFixed(6);
-		document.getElementById('initialLon').textContent = longitude.toFixed(6);
-		
-        // Slider-Grenzen berücksichtigen.
+
+        // Radius auf den Slider-Bereich begrenzen.
         initialRadius = Math.max(1, Math.min(100, initialRadius));
 
         const map = L.map('map').setView([latitude, longitude], 9);
@@ -101,7 +103,7 @@
             iconUrl: 'marker-icon.png',
             shadowUrl: 'marker-shadow.png'
         });
-        
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
@@ -112,6 +114,8 @@
         const latitudeField = document.getElementById('latitude');
         const longitudeField = document.getElementById('longitude');
         const radiusField = document.getElementById('radiusField');
+        const latValue = document.getElementById('latValue');
+        const lonValue = document.getElementById('lonValue');
 
         radiusSlider.value = initialRadius;
 
@@ -126,40 +130,35 @@
             fillOpacity: 0.2
         }).addTo(map);
 
-		function updateFields() {
-			const position = marker.getLatLng();
-			const radiusKm = Number(radiusSlider.value);
-			const radiusMeters = radiusKm * 1000;
+        function updateFields() {
+            const position = marker.getLatLng();
+            const radiusKm = Number(radiusSlider.value);
 
-			latitudeField.value = position.lat;
-			longitudeField.value = position.lng;
+            latitudeField.value = position.lat;
+            longitudeField.value = position.lng;
+            radiusField.value = radiusKm;
 
-			// Formularfeld enthält den Radius in Kilometern
-			radiusField.value = radiusKm;
-			radiusValue.textContent = radiusKm;
+            latValue.textContent = position.lat.toFixed(6);
+            lonValue.textContent = position.lng.toFixed(6);
+            radiusValue.textContent = radiusKm;
 
-			circle.setLatLng(position);
-			circle.setRadius(radiusMeters);
-			
-			// ++++++ neu
-			latValue.textContent = position.lat.toFixed(6);
-			lonValue.textContent = position.lng.toFixed(6);
-			
-		}
+            circle.setLatLng(position);
+            circle.setRadius(radiusKm * 1000);
+        }
 
-        // Marker mit der Maus verschoben
+        // Aktualisieren, wenn der Marker verschoben wird.
         marker.on('dragend', updateFields);
 
-        // Marker durch Klick auf die Karte setzen/verschieben
+        // Marker durch Klick auf die Karte verschieben.
         map.on('click', function (event) {
             marker.setLatLng(event.latlng);
             updateFields();
         });
 
-        // Radius über den Slider ändern
+        // Radius ändern.
         radiusSlider.addEventListener('input', updateFields);
 
-        // Initiale Werte in die versteckten Felder schreiben
+        // Anfangswerte setzen.
         updateFields();
     </script>
 </body>
