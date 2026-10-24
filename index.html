@@ -94,7 +94,7 @@ https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
         // Slider-Grenzen berücksichtigen.
         initialRadius = Math.max(1, Math.min(100, initialRadius));
 
-        const map = L.map('map').setView([latitude, longitude], 13);
+        const map = L.map('map').setView([latitude, longitude], 9);
 
         L.Icon.Default.mergeOptions({
             iconRetinaUrl: 'marker-icon-2x.png',
