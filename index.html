@@ -87,7 +87,10 @@
         if (!Number.isFinite(initialRadius)) {
             initialRadius = 1;
         }
-
+		// ++++ neu
+		document.getElementById('initialLat').textContent = latitude.toFixed(6);
+		document.getElementById('initialLon').textContent = longitude.toFixed(6);
+		
         // Slider-Grenzen berücksichtigen.
         initialRadius = Math.max(1, Math.min(100, initialRadius));
 
