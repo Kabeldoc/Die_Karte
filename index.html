@@ -1,12 +1,4 @@
-<!-- 
-Aufruf mit:
-https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
--->
 <!DOCTYPE html>
-<!-- 
-Aufruf mit:
-https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
--->
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -47,24 +39,23 @@ https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
 <body>
 
     <div id="controls">
-        <label for="radius">
-            Umkreis: <span id="radiusValue">5</span> km
-        </label><br>
-        <input id="radius" type="range" min="1" max="100" step="1" value="5">
-    </div>
+    <label for="radius">
+        Umkreis: <span id="radiusValue">5</span> km
+    </label><br>
+    <input id="radius" type="range" min="1" max="100" step="1" value="5">
+	
+<!-- neu -->
+    <div>Lat: <span id="latValue"></span></div>
+    <div>Lon: <span id="lonValue"></span></div>
+</div>
 
     <div id="map"></div>
 
     <!-- Versteckte Formularfelder mit den aktuellen Werten -->
     <form id="locationForm">
-     <!-- 
-		<input type="hidden" name="latitude" id="latitude">
+     	<input type="hidden" name="latitude" id="latitude">
         <input type="hidden" name="longitude" id="longitude">
         <input type="hidden" name="radius" id="radiusField">
-		-->
-		<input  name="latitude" id="latitude">
-        <input  name="longitude" id="longitude">
-        <input  name="radius" id="radiusField">
     </form>
 
     <script src="leaflet.js"></script>
@@ -74,6 +65,10 @@ https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
         // URL-Werte verwenden, sofern sie gültig sind; sonst Deutschland als Startpunkt.
         const defaultLat = 51.1657;
         const defaultLon = 10.4515;
+		
+		// +++++ neu
+		const latValue = document.getElementById('latValue');
+		const lonValue = document.getElementById('lonValue');
 
         let latitude = parseFloat(params.get('lat'));
         let longitude = parseFloat(params.get('lon'));
@@ -140,6 +135,11 @@ https://kabeldoc.github.io/Die_Karte/index.html?lat=52.5200&lon=13.4050&radius=5
 
 			circle.setLatLng(position);
 			circle.setRadius(radiusMeters);
+			
+			// ++++++ neu
+			latValue.textContent = position.lat.toFixed(6);
+			lonValue.textContent = position.lng.toFixed(6);
+			
 		}
 
         // Marker mit der Maus verschoben
